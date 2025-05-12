@@ -5,19 +5,20 @@ RUN apk add --no-cache openssl openssl-dev
 
 WORKDIR /app
 
-# Set environment to production
-ENV NODE_ENV=production
-
+# Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
 
+# Install dependencies
 RUN npm install
 
+# Copy source code
 COPY . .
 
-RUN npm run prisma:deploy
+# Generate Prisma client and build the application
+RUN npx prisma generate
 RUN npm run build
 
-EXPOSE 3000
+EXPOSE 3001
 
-CMD ["npm", "start"] 
+CMD ["npm", "start"]

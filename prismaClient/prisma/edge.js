@@ -86,6 +86,9 @@ Prisma.NullTypes = {
  * Enums
  */
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
 
@@ -102,6 +105,11 @@ exports.Prisma.SalesScalarFieldEnum = {
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 
@@ -137,7 +145,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma",
@@ -146,18 +154,18 @@ const config = {
   "datasourceNames": [
     "db"
   ],
-  "activeProvider": "sqlite",
+  "activeProvider": "postgresql",
   "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
-        "fromEnvVar": null,
-        "value": "file:./dev.db"
+        "fromEnvVar": "DATABASE_URL",
+        "value": null
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../prismaClient/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./dev.db\"\n  // provider = \"postgresql\"\n  // url      = env(\"DATABASE_URL\")\n}\n\nmodel Sales {\n  id          Int      @id @default(autoincrement())\n  productName String\n  quantity    Int\n  price       Float\n  totalAmount Float\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@map(\"sales\")\n}\n",
-  "inlineSchemaHash": "51121c2098c22e6eb501cf2b0caddf9decc3a8bec74f93639bbbd4ffdeab7e18",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../prismaClient/prisma\"\n}\n\ndatasource db {\n  // provider = \"sqlite\"\n  // url      = \"file:./dev.db\"\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Sales {\n  id          Int      @id @default(autoincrement())\n  productName String\n  quantity    Int\n  price       Float\n  totalAmount Float\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@map(\"sales\")\n}\n",
+  "inlineSchemaHash": "2749dcdb3b6cd1025d2795dd3497eeea6e99e2a2302136a60937163b3ee06531",
   "copyEngine": true
 }
 config.dirname = '/'
@@ -168,7 +176,9 @@ config.engineWasm = undefined
 config.compilerWasm = undefined
 
 config.injectableEdgeEnv = () => ({
-  parsed: {}
+  parsed: {
+    DATABASE_URL: typeof globalThis !== 'undefined' && globalThis['DATABASE_URL'] || typeof process !== 'undefined' && process.env && process.env.DATABASE_URL || undefined
+  }
 })
 
 if (typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined) {

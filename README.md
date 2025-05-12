@@ -73,11 +73,6 @@ docker compose down
 docker compose logs -f
 ```
 
-5. To run database migrations in Docker:
-```bash
-docker compose exec app yarn prisma migrate deploy
-```
-
 ## Running the Application
 
 ### Local Development

@@ -8,7 +8,7 @@ import { config } from './config';
 import salesRouter from './routes/sales';
 import subscribeRouter from './routes/subscribe';
 
-const isProd = process.env.NODE_ENV === 'production';
+const isDev = process.env.NODE_ENV === 'development';
 
 const app = express();
 
@@ -20,7 +20,7 @@ const options = {
     description: 'API documentation for Express Redis Prisma application',
   },
   baseDir: __dirname,
-  filesPattern: isProd ? './**/*.js' : './**/*.ts',
+  filesPattern: isDev ? './**/*.ts' : './**/*.js',
   swaggerUIPath: '/api-docs',
   exposeSwaggerUI: true,
   exposeApiDocs: true,
