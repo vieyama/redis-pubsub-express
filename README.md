@@ -37,11 +37,9 @@ yarn install
 ```
 
 3. Set up environment variables:
-Create a `.env` file in the root directory with the following variables:
-```env
-PORT=3001
-REDIS_URL=redis://localhost:6379
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/pubsub?schema=public
+Create a `.env` file in root folder 
+```
+cp .env.example .env
 ```
 
 4. Set up the database:
