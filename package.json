@@ -1,0 +1,33 @@
+{
+  "name": "express-redis-prisma-app",
+  "version": "1.0.0",
+  "description": "Express application with Redis pub/sub, Prisma, and Swagger",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "npx prisma migrate deploy && npx prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "express-jsdoc-swagger": "^1.8.0",
+    "helmet": "^7.1.0",
+    "ioredis": "^5.6.1",
+    "redis": "^4.6.13",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.20",
+    "prisma": "^6.7.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  }
+}
