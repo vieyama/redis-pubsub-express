@@ -3,6 +3,9 @@ FROM node:20-alpine
 # Install OpenSSL and other dependencies
 RUN apk add --no-cache openssl openssl-dev
 
+# Install PostgreSQL client
+RUN apk add --no-cache postgresql-client
+
 WORKDIR /app
 
 # Copy package files
@@ -19,6 +22,11 @@ COPY . .
 RUN npx prisma generate
 RUN npm run build
 
+# Copy entrypoint script
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 3001
 
-CMD ["npm", "start"]
+# Set default command
+CMD ["sh", "./entrypoint.sh"]

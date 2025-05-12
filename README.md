@@ -73,6 +73,12 @@ docker compose down
 docker compose logs -f
 ```
 
+5. Reset the migration
+```bash
+docker compose run --rm app npx prisma migrate reset
+```
+<span style="background:#FDFBEE; color: #E55050; margin-left: 17px; font-size: 18px">It will erase all data from the database, so please be cautious.</span>
+
 ## Running the Application
 
 ### Local Development
