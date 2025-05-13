@@ -1,5 +1,4 @@
 import express from 'express';
-import { createClient } from 'redis';
 import expressJSDocSwagger from 'express-jsdoc-swagger';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -9,6 +8,7 @@ import salesRouter from './routes/sales';
 import subscribeRouter from './routes/subscribe';
 
 const isDev = process.env.NODE_ENV === 'development';
+const allowedOrigins = process.env.CORS_ORIGINS?.split(',') || [];
 
 const app = express();
 
@@ -40,7 +40,19 @@ const options = {
 expressJSDocSwagger(app)(options);
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 app.use(helmet());
 app.use(express.json());
 
