@@ -1,6 +1,6 @@
 import express from 'express';
 import expressJSDocSwagger from 'express-jsdoc-swagger';
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 import helmet from 'helmet';
 import { initializeRedis } from './utils/redis';
 import { config } from './config';
@@ -8,7 +8,7 @@ import salesRouter from './routes/sales';
 import subscribeRouter from './routes/subscribe';
 
 const isDev = process.env.NODE_ENV === 'development';
-const allowedOrigins = process.env.CORS_ORIGINS?.split(',') || [];
+const allowedOrigins = process.env.CORS_ORIGINS || ''
 
 const app = express();
 
@@ -39,20 +39,18 @@ const options = {
 // Initialize Swagger
 expressJSDocSwagger(app)(options);
 
-// Middleware
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
+const corsOptions: CorsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow the request
     } else {
-      return callback(new Error('Not allowed by CORS'));
+      callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+};
+
+// Middleware
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(express.json());
 
