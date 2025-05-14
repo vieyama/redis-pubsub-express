@@ -66,7 +66,7 @@ salesRouter.post('/', async (req, res) => {
 salesRouter.get('/', async (_req, res) => {
   try {
     const sales = await salesService.getSales();
-    res.json(sales);
+    res.json({data: sales, total: sales.length});
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
