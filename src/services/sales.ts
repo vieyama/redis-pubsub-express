@@ -1,6 +1,7 @@
 import prisma from '../utils/prisma';
 import { CreateSalesInput, UpdateSalesInput, Sales } from '../types/sales';
 import { publish } from '../services/redis';
+import { redis } from '../utils/redis';
 
 const SALES_CHANNEL = 'sales-updates';
 
@@ -18,9 +19,26 @@ export const createSale = async (data: CreateSalesInput): Promise<Sales> => {
 };
 
 export const getSales = async (): Promise<Sales[]> => {
-  return prisma.sales.findMany({
+  if (!redis || redis.status !== 'ready') {
+    throw new Error('Redis not ready');
+  }
+
+  const cacheKey = 'sales';
+  const cachedSales = await redis.get(cacheKey);
+  if (cachedSales) {
+    console.log("Cache hit");
+    return JSON.parse(cachedSales);
+  }
+
+  const sales = await prisma.sales.findMany({
     orderBy: { createdAt: 'desc' }
   });
+
+  if (sales) {
+    await redis.set(cacheKey, JSON.stringify(sales), 'EX', 3600); // Cache for 1 hour
+  }
+
+  return sales;
 };
 
 export const getSaleById = async (id: number): Promise<Sales | null> => {

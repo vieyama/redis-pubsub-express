@@ -63,7 +63,7 @@ salesRouter.post('/', async (req, res) => {
  * @return {object} 500 - Server error
  */
 
-salesRouter.get('/', async (req, res) => {
+salesRouter.get('/', async (_req, res) => {
   try {
     const sales = await salesService.getSales();
     res.json(sales);
